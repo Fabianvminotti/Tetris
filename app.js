@@ -8,6 +8,15 @@ document.addEventListener('DOMContentLoaded',(e)=>{
 	const scoreDisplay = document.querySelector('#score');
 	const startButton = document.querySelector('#start-button');
 	const ancho = 10; /*numero de cuadrados que tiene de ancho del tablero*/
+	let nextRandom = 0
+	let timerId;
+	const colors = [
+    'orange',
+    'red',
+    'purple',
+    'green',
+    'blue'
+  ]
 
 
 
@@ -20,9 +29,9 @@ document.addEventListener('DOMContentLoaded',(e)=>{
 					];
 
 	const piezaZ = [[2*ancho,ancho+1, 2*ancho+1,ancho+2],
-					[0, ancho, ancho+1, 2*ancho+2],
+					[0, ancho, ancho+1, 2*ancho+1],
 					[2*ancho,ancho+1, 2*ancho+1,ancho+2],
-					[0, ancho, ancho+1, 2*ancho+2]
+					[0, ancho, ancho+1, 2*ancho+1]
 					];
 
 	const piezaT = [[1, ancho, ancho+1, ancho+2],
@@ -48,7 +57,7 @@ document.addEventListener('DOMContentLoaded',(e)=>{
 //con esto se elige aleatoriamente la pieza que va a aparecer
 // random te devuelve un valor entre 0 y 1, este se multiplica por la longitud del array de las piezas (que son cinco piezas) y el floor es para truncar el munero al entero
 	let random = Math.floor(Math.random()*piezas.length);
-	let current = piezas[random][0];
+	let current = piezas[random][0]; //current es el tipo y rotacion de la pieza seleccionada
 
 	let currentPosition = 4; //esta es la posicion de la pieza cuando aparece (cuatro piezas desde el margen izquierdo en este caso)
 	let currentRotation = 0; 
@@ -56,23 +65,28 @@ document.addEventListener('DOMContentLoaded',(e)=>{
 // con esta parte se dibujan las piezas agregando un tipo de clase a los squareseeccionados
 
 	function draw () {
-		current.forEach(index =>(
-			squares[currentPosition+index].classList.add('pieza')));
+		current.forEach(index =>{
+				squares[currentPosition+index].classList.add('pieza')
+			squares[currentPosition + index].style.backgroundColor = colors[random]
+
+		})
+			
 
 	}
 
-draw() ;
+
 
 
 function undraw () {
-		current.forEach(index =>(
-			squares[currentPosition+index].classList.remove('pieza')));
+		current.forEach(index =>{
+			squares[currentPosition+index].classList.remove('pieza')
+			squares[currentPosition + index].style.backgroundColor =""});
 	}
 
 
 //aca se define el intervalo de tiempo para que redibuje la pieza un cuadrado mas abajo
 //timer ejecura movedown cada 1000 milisegundos
-let timerId = setInterval(moveDown,1000)
+//let timerId = setInterval(moveDown,1000)
 
 //aca se asignan las teclas para moverse y rotar #####################33
 
@@ -80,11 +94,11 @@ function control (e) {
 	if(e.keyCode === 37){ //37 es el codigo de JS para la tecla de la izquierda (left arrow)
 		moveLeft()
 	} else if(e.keyCode === 38){//es el codigo para flecha de arriba
-			//rotar
+			rotar()
 	} else if(e.keyCode === 39){
 			moveRigth()
 	} else if(e.keyCode === 40){
-		//moveDown
+		moveDown() //esta es la misma funcion que esta en el timer.
 	}
 }
 
@@ -116,10 +130,12 @@ function parar(){
 	//ahora aca se crea una nueva pieza al principio
 	//se hace lo mismo que se hizo en el random
 
-			random = Math.floor(Math.random()*piezas.length);
+			random = nextRandom
+      		nextRandom = Math.floor(Math.random() * piezas.length)
 			current = piezas[random][currentRotation];
 			currentPosition=4
 			draw() //y aca se dibuja devuelta
+			displayShape() //esto dibuja la siguiente figura
 	}
 }
 
@@ -145,6 +161,68 @@ function moveRigth() {
     }
     draw()
   }
+
+//Rotar las piezas
+
+function rotar () {
+	undraw()
+	currentRotation++ //el ++ es un perador que le sula uno mas a la variables
+	if (currentRotation===current.length) {
+		currentRotation=0 /*esto es que para q cuando se llegue a las cuatro rotacones, se vuelva a la primera*/
+	}
+	current=piezas[random][currentRotation] //selecciona los elementos del array rotado con current rotario
+	draw()
+}
+
+
+// esot es para programar la visualizacion del roximo bloque 
+
+let displaySquares = document.querySelectorAll('mini-grid div')
+let displayWidth = 4 //ancho del uadradito del display
+let displayIndex = 0
+
+// se reescriben las piezas reemplazando ancho por displarAncho (para adaptarse a la nueva pantallita)
+  //the Tetrominos without rotations
+  const upNextTetrominoes = [
+    [1, displayWidth+1, displayWidth*2+1, 2], //lTetromino
+    [0, displayWidth, displayWidth+1, displayWidth*2+1], //zTetromino
+    [1, displayWidth, displayWidth+1, displayWidth+2], //tTetromino
+    [0, 1, displayWidth, displayWidth+1], //oTetromino
+    [1, displayWidth+1, displayWidth*2+1, displayWidth*3+1] //iTetromino
+  ]
+
+  //display the shape in the mini-grid display
+  function displayShape() {
+    //remove any trace of a tetromino form the entire grid
+    displaySquares.forEach(square => {
+      square.classList.remove('pieza')
+      square.style.backgroundColor = ''
+    })
+    upNextTetrominoes[nextRandom].forEach( index => {
+      displaySquares[displayIndex + index].classList.add('pieza');
+      displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom];
+    })
+  }
+
+
+
+//ahora se le da funcionalidad al boton de inicio pausa
+
+startButton.addEventListener('click', () => {
+    if (timerId) {
+      clearInterval(timerId)
+      timerId = null
+    } else {
+      draw()
+      timerId = setInterval(moveDown, 1000)
+      nextRandom = Math.floor(Math.random()*piezas.length)
+      displayShape()
+      draw() ;
+    }
+  })
+
+
+
 
 
 
