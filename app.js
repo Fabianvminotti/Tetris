@@ -74,8 +74,26 @@ function undraw () {
 //timer ejecura movedown cada 1000 milisegundos
 let timerId = setInterval(moveDown,1000)
 
-//move down es la funcion que borra y redibuja ams abajo la pieza
+//aca se asignan las teclas para moverse y rotar #####################33
 
+function control (e) {
+	if(e.keyCode === 37){ //37 es el codigo de JS para la tecla de la izquierda (left arrow)
+		moveLeft()
+	} else if(e.keyCode === 38){//es el codigo para flecha de arriba
+			//rotar
+	} else if(e.keyCode === 39){
+			moveRigth()
+	} else if(e.keyCode === 40){
+		//moveDown
+	}
+}
+
+document.addEventListener('keyup', control)
+
+
+
+
+//move down es la funcion que borra y redibuja ams abajo la pieza
 function moveDown(){
 	undraw()
 	currentPosition += ancho //le suma un ancho entero a las piezas
@@ -105,9 +123,28 @@ function parar(){
 	}
 }
 
+//aca se determina el movimiento a la izquierda, siempre y cuando no llegue al margen izquierdo
+
+function moveLeft() {
+    undraw()
+    const isAtLeftEdge = current.some(index => (currentPosition + index) % ancho === 0)
+    if(!isAtLeftEdge) currentPosition -=1 //el ! quiere decir que no es igual esa variable
+    if(current.some(index => squares[currentPosition + index].classList.contains('parar'))) {
+      currentPosition +=1 //esto es para que cuando hay un "parar" al lado se cancele la accion del if anterior sumando (o restando) un valor al current position
+    }
+    draw()
+  }
 
 
-
+function moveRigth() {
+    undraw()
+    const isAtRigthEdge = current.some(index => (currentPosition + index) % ancho === ancho-1)
+    if(!isAtRigthEdge) currentPosition +=1 //el ! quiere decir que no es igual esa variable
+    if(current.some(index => squares[currentPosition + index].classList.contains('parar'))) {
+      currentPosition -=1
+    }
+    draw()
+  }
 
 
 
