@@ -17,6 +17,7 @@ document.addEventListener('DOMContentLoaded',(e)=>{
     'green',
     'blue'
   ]
+  	let score=0;
 
 
 
@@ -136,6 +137,7 @@ function parar(){
 			currentPosition=4
 			draw() //y aca se dibuja devuelta
 			displayShape() //esto dibuja la siguiente figura
+			addScore()
 	}
 }
 
@@ -177,7 +179,7 @@ function rotar () {
 
 // esot es para programar la visualizacion del roximo bloque 
 
-let displaySquares = document.querySelectorAll('mini-grid div')
+let displaySquares = document.querySelectorAll('.mini-grid div');
 let displayWidth = 4 //ancho del uadradito del display
 let displayIndex = 0
 
@@ -199,12 +201,12 @@ let displayIndex = 0
       square.style.backgroundColor = ''
     })
     upNextTetrominoes[nextRandom].forEach( index => {
-      displaySquares[displayIndex + index].classList.add('pieza');
-      displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom];
+      displaySquares[displayIndex + index].classList.add("pieza");
+      //displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom];
     })
   }
 
-
+ 
 
 //ahora se le da funcionalidad al boton de inicio pausa
 
@@ -221,10 +223,24 @@ startButton.addEventListener('click', () => {
     }
   })
 
+ function addScore() {
+    for (let i = 0; i < 199; i +=ancho) {
+      const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9]
 
-
-
-
+      if(row.every(index => squares[index].classList.contains('parar'))) {
+        score +=10
+        scoreDisplay.innerHTML = score
+        row.forEach(index => {
+          squares[index].classList.remove('parar')
+          squares[index].classList.remove('pieza')
+          squares[index].style.backgroundColor = ''
+        })
+        const squaresRemoved = squares.splice(i, ancho)
+        squares = squaresRemoved.concat(squares)
+        squares.forEach(cell => grid.appendChild(cell))
+      }
+    }
+  }
 
 
 
