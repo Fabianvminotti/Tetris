@@ -202,7 +202,7 @@ let displayIndex = 0
     })
     upNextTetrominoes[nextRandom].forEach( index => {
       displaySquares[displayIndex + index].classList.add("pieza");
-      //displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom];
+      displaySquares[displayIndex + index].style.backgroundColor = colors[nextRandom];
     })
   }
 
@@ -211,7 +211,7 @@ let displayIndex = 0
 //ahora se le da funcionalidad al boton de inicio pausa
 
 startButton.addEventListener('click', () => {
-    if (timerId) {
+    if (timerId) {//si esta corriendo lo pausa, si no esta corriendo lo inicia
       clearInterval(timerId)
       timerId = null
     } else {
@@ -224,24 +224,31 @@ startButton.addEventListener('click', () => {
   })
 
  function addScore() {
-    for (let i = 0; i < 199; i +=ancho) {
+    for (let i = 0; i < 199; i +=ancho) { //va revisando todas las filas una por una
       const row = [i, i+1, i+2, i+3, i+4, i+5, i+6, i+7, i+8, i+9]
 
       if(row.every(index => squares[index].classList.contains('parar'))) {
-        score +=10
+        score +=10 //cuando todos los elementos de una fila contienen la clase parar, suma 10 puntos
         scoreDisplay.innerHTML = score
-        row.forEach(index => {
+        row.forEach(index => {// saca la clase parar para que no moleste despues
           squares[index].classList.remove('parar')
-          squares[index].classList.remove('pieza')
+          squares[index].classList.remove('pieza')// remueve el formato
           squares[index].style.backgroundColor = ''
         })
-        const squaresRemoved = squares.splice(i, ancho)
+        const squaresRemoved = squares.splice(i, ancho) //quita la fila del conjunto de squares
         squares = squaresRemoved.concat(squares)
-        squares.forEach(cell => grid.appendChild(cell))
+        squares.forEach(cell => grid.appendChild(cell)) //agrega celdas al prncipio, creo
       }
     }
   }
 
+
+function gameOver() {//si apensas aparece la pieza coincide con squares con clase parar, deja de correr el tiempo y muestra la plabra end
+    if(current.some(index => squares[currentPosition + index].classList.contains('parar'))) { 
+      scoreDisplay.innerHTML = 'end'
+      clearInterval(timerId)
+    }
+  }
 
 
 
