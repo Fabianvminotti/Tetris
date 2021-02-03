@@ -3,6 +3,7 @@
 document.addEventListener('DOMContentLoaded',(e)=>{
 	
 	const grid = document.querySelector(".grid");
+	let tetris = document.getElementById("tetris");
 	//aca se seleccionan TODOS los cuadrados y se agrupan en un array (dandole asi un index)
 	let squares = Array.from(document.querySelectorAll('.grid div'));
 	const scoreDisplay = document.querySelector('#score');
@@ -11,11 +12,11 @@ document.addEventListener('DOMContentLoaded',(e)=>{
 	let nextRandom = 0
 	let timerId;
 	const colors = [
-    'orange',
-    'red',
-    'purple',
-    'green',
-    'blue'
+    '#034732',
+    '#008148',
+    '#C6C013',
+    '#EF8A17',
+    '#EF2917'
   ]
   	let score=0;
 
@@ -249,6 +250,16 @@ function gameOver() {//si apensas aparece la pieza coincide con squares con clas
       clearInterval(timerId)
     }
   }
+
+
+function changeColor(){
+	colorRandom=Math.floor(Math.random()*colors.length);
+ 	tetris.style.color = colors[colorRandom];
+}
+
+timerColor=setInterval(changeColor,250)
+
+
 
 
 
