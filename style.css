@@ -1,5 +1,21 @@
+body{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	align-content: center;
+	justify-content: center;
+	transition: 1.5s;
+
+}
+
 .container{
 	display: flex;
+	align-items: center;
+	align-content: center;
+	justify-content: center;
+	width: 720px;
+	background-color: white;
+
 }
 
 
@@ -120,4 +136,21 @@ h3{
 h1{
 	font-family: 'Fredoka One', cursive;
 	font-size: 60px;
+	transition: 2s;
+}
+
+p{
+	font-family: 'Fredoka One', cursive;
+	color: gray;
+}
+
+footer{
+	display: block;
+	background-color: gray;
+	text-align: center;
+	color: white;
+	width: 720px;
+	height: 30px;
+	font-size: italic;
+
 }
